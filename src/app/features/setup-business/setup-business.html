@@ -1,0 +1,28 @@
+<div class="setup-wrapper">
+  <mat-card class="setup-card">
+    <mat-card-header>
+      <mat-card-title>Business Setup</mat-card-title>
+      <mat-card-subtitle>Select the sectors you operate in to customize your dashboard</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-selection-list #businessList (selectionChange)="onSelectionChange($event)">
+        <mat-list-option *ngFor="let type of businessTypes" [value]="type.id">
+          <mat-icon matListItemIcon>business_center</mat-icon>
+          <div matListItemTitle>{{ type.name }}</div>
+          <div matListItemLine>{{ type.description }}</div>
+        </mat-list-option>
+      </mat-selection-list>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-flat-button
+              color="primary"
+              [disabled]="selectedIds.length === 0"
+              (click)="finish()">
+        Finish & Proceed
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,99 @@
+<div class="dashboard-wrapper">
+  <!-- Header with Add Item button -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1>Merchant Dashboard</h1>
+      <p>Manage your product inventory gracefully</p>
+    </div>
+    <button mat-raised-button color="primary" class="add-btn" (click)="navigateToAddItem()">
+      <mat-icon>add_circle_outline</mat-icon>
+      <span class="add-text">Add Item</span>
+    </button>
+  </div>
+
+  <div class="dashboard-content">
+    <p class="default-text">Welcome back! Here is a summary of your registered items grouped by type.</p>
+
+    <!-- Business Types Accordion -->
+    <mat-accordion class="business-accordion" multi>
+      <mat-expansion-panel *ngFor="let bt of businessTypes" class="bt-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="panel-icon">storefront</mat-icon>
+            {{ bt.name }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <!-- Categories Accordion -->
+        <mat-accordion class="category-accordion" multi>
+          <mat-expansion-panel *ngFor="let cat of bt.categories" class="cat-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon class="panel-icon">category</mat-icon>
+                {{ cat.name }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <!-- Subcategories -->
+            <div class="subcategory-section" *ngFor="let subcat of cat.subcategories">
+              <div class="subcat-header">
+                <h3 class="subcat-title"><div class="dot"></div> {{ subcat.name }}</h3>
+              </div>
+
+              <!-- Items Grid -->
+              <div class="items-grid">
+                <mat-card *ngFor="let item of subcat.items" class="item-card" [class.expanded]="expandedItemId === item.id" (click)="toggleItemExpansion(item.id)">
+                  <div class="img-container">
+                    <img mat-card-image [src]="item.imageUrl" alt="Item Image" class="item-img" />
+                    <div class="image-overlay">
+                      <mat-icon>visibility</mat-icon>
+                      <span>View Variants</span>
+                    </div>
+                  </div>
+                  
+                  <mat-card-header>
+                    <mat-card-title>{{ item.name }}</mat-card-title>
+                    <mat-card-subtitle>
+                      <mat-icon class="inline-icon">straighten</mat-icon>
+                      Unit: {{ item.unitOfMeasurement }}
+                    </mat-card-subtitle>
+                  </mat-card-header>
+
+                  <!-- Variants Section (Expands on Click) -->
+                  <div class="variants-container" *ngIf="expandedItemId === item.id" (click)="$event.stopPropagation()">
+                    <div class="variants-header">
+                      <span>Variants ({{ item.variants.length }})</span>
+                    </div>
+                    <div class="variant-list">
+                       <div class="variant-item" *ngFor="let variant of item.variants">
+                         <div class="variant-details">
+                           <strong>{{ variant.model }}</strong>
+                           <span class="v-badge v-color">{{ variant.color }}</span>
+                           <span class="v-badge v-price">${{ variant.unitPrice }}</span>
+                         </div>
+                         <div class="variant-actions">
+                           <button mat-icon-button class="action-btn edit" (click)="editVariant(variant, $event)" matTooltip="Edit Variant">
+                             <mat-icon>edit</mat-icon>
+                           </button>
+                           <button mat-icon-button class="action-btn delete" (click)="deleteVariant(variant, item, $event)" matTooltip="Delete Variant">
+                             <mat-icon>delete_outline</mat-icon>
+                           </button>
+                         </div>
+                       </div>
+                       <div *ngIf="item.variants.length === 0" class="no-variants">
+                         No variants registered for this item yet.
+                       </div>
+                    </div>
+                  </div>
+                </mat-card>
+              </div>
+
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+      </mat-expansion-panel>
+    </mat-accordion>
+
+  </div>
+</div>

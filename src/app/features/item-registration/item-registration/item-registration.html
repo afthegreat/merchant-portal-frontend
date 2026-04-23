@@ -1,0 +1,162 @@
+<div class="registration-wrapper">
+  <div class="registration-header">
+    <div class="header-content">
+      <h1>Register Items</h1>
+      <p>Categorize and dynamically define multiple items and their variants</p>
+    </div>
+    <button mat-stroked-button class="header-btn" (click)="navigateBack()">
+      <mat-icon>arrow_back</mat-icon> Back to Dashboard
+    </button>
+  </div>
+
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+    <!-- Step 1: Business Classification -->
+    <mat-card class="form-card glass-card">
+      <mat-card-header>
+         <div mat-card-avatar class="card-avatar"><mat-icon>category</mat-icon></div>
+         <mat-card-title>Business Classification</mat-card-title>
+         <mat-card-subtitle>Select the type and mapping for your items</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="grid-form">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Business Type</mat-label>
+          <mat-select formControlName="businessTypeId">
+            <mat-option *ngFor="let bt of businessTypes" [value]="bt.id">{{ bt.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="categoryId">
+            <mat-option *ngFor="let cat of availableCategories" [value]="cat.id">{{ cat.name }}</mat-option>
+            <mat-option value="custom" class="custom-option"><mat-icon>add</mat-icon> Add New Category</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="form-field custom-input-anim" *ngIf="registrationForm.get('categoryId')?.value === 'custom'">
+          <mat-label>Custom Category Name</mat-label>
+          <input matInput formControlName="customCategoryName" placeholder="E.g., Pet Supplies">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Subcategory (Optional)</mat-label>
+          <mat-select formControlName="subcategoryId">
+            <mat-option *ngFor="let subcat of availableSubcategories" [value]="subcat.id">{{ subcat.name }}</mat-option>
+            <!-- Only show Add New Subcategory if Category is selected and not creating a custom category themselves -->
+            <mat-option value="custom" class="custom-option" *ngIf="registrationForm.get('categoryId')?.value && registrationForm.get('categoryId')?.value !== 'custom'">
+               <mat-icon>add</mat-icon> Add New Subcategory
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field custom-input-anim" *ngIf="registrationForm.get('categoryId')?.value === 'custom' || registrationForm.get('subcategoryId')?.value === 'custom'">
+          <mat-label>Custom Subcategory Name</mat-label>
+          <input matInput formControlName="customSubcategoryName" placeholder="E.g., Dog Toys">
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Step 2: Items & Variants -->
+    <div formArrayName="items" class="items-container">
+      <div class="items-header">
+         <h2>Items Definition</h2>
+         <button type="button" mat-flat-button class="add-item-btn primary-gradient" (click)="addItem()">
+           <mat-icon>add</mat-icon> Add Another Item
+         </button>
+      </div>
+
+      <mat-card class="form-card glass-card item-card" *ngFor="let itemCtrl of items.controls; let i = index" [formGroupName]="i">
+         <div class="item-header">
+           <div class="title-with-dot">
+             <div class="dot active"></div>
+             <h3>Item #{{i + 1}}</h3>
+           </div>
+           <button type="button" mat-icon-button color="warn" (click)="removeItem(i)" matTooltip="Remove entire item" *ngIf="items.length > 1">
+             <mat-icon>delete_forever</mat-icon>
+           </button>
+         </div>
+         
+         <mat-card-content class="grid-form">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Item Name</mat-label>
+              <input matInput formControlName="name" placeholder="E.g., iPhone 15">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Unit of Measurement</mat-label>
+              <input matInput formControlName="unitOfMeasurement" placeholder="E.g., Pieces, Kg, Pairs">
+            </mat-form-field>
+         </mat-card-content>
+
+         <div class="divider"></div>
+
+         <!-- Custom Variant Columns Management -->
+         <div class="custom-columns-section">
+           <div class="columns-title">Variant Properties Builder</div>
+           <p class="columns-subtitle">Add custom columns like "Color", "Size", or "Storage" for this item's variants.</p>
+           <div class="column-adder">
+             <input #newColName type="text" placeholder="Custom property name..." class="modern-input">
+             <button type="button" mat-flat-button class="add-col-btn accent-gradient" (click)="addColumnToItem(i, newColName.value); newColName.value = ''">
+               <mat-icon>add_column_right</mat-icon> Add Property
+             </button>
+           </div>
+           <div class="active-columns" *ngIf="getVariantColumns(i).length > 0">
+             <div class="active-col-chip glass-chip" *ngFor="let colCtrl of getVariantColumns(i).controls; let c = index">
+               {{ colCtrl.value }}
+               <mat-icon class="remove-col" (click)="removeColumnFromItem(i, c)">cancel</mat-icon>
+             </div>
+           </div>
+         </div>
+
+         <!-- Variants Table -->
+         <div class="variants-section" formArrayName="variants">
+            <div class="variants-title-row">
+              <h4>Variants <span class="badge">{{ getVariants(i).length }}</span></h4>
+              <button type="button" mat-stroked-button class="add-variant-btn" (click)="addVariant(i)">
+                 <mat-icon>playlist_add</mat-icon> Add Variant Row
+              </button>
+            </div>
+            
+            <div class="variants-table" *ngIf="getVariants(i).length > 0">
+               <!-- Headers -->
+               <div class="variant-row text-header">
+                  <div class="v-cell" *ngFor="let colCtrl of getVariantColumns(i).controls">{{ colCtrl.value }}</div>
+                  <div class="v-cell">Price ($)</div>
+                  <div class="v-cell">Stock</div>
+                  <div class="v-cell action-cell"></div>
+               </div>
+               
+               <!-- Rows -->
+               <div class="variant-row glass-row" *ngFor="let variantCtrl of getVariants(i).controls; let v = index" [formGroupName]="v">
+                 <div class="v-cell" *ngFor="let colCtrl of getVariantColumns(i).controls">
+                   <mat-form-field appearance="outline" class="dense-field">
+                     <input matInput [formControlName]="colCtrl.value" [placeholder]="colCtrl.value">
+                   </mat-form-field>
+                 </div>
+                 <div class="v-cell">
+                   <mat-form-field appearance="outline" class="dense-field price-input">
+                     <span matPrefix class="prefix-icon">$ &nbsp;</span>
+                     <input matInput type="number" formControlName="unitPrice" placeholder="0.00">
+                   </mat-form-field>
+                 </div>
+                 <div class="v-cell">
+                   <mat-form-field appearance="outline" class="dense-field">
+                     <input matInput type="number" formControlName="stock" placeholder="0">
+                   </mat-form-field>
+                 </div>
+                 <div class="v-cell action-cell">
+                   <button type="button" mat-icon-button color="warn" class="row-delete" (click)="removeVariant(i, v)">
+                     <mat-icon>remove_circle_outline</mat-icon>
+                   </button>
+                 </div>
+               </div>
+            </div>
+         </div>
+      </mat-card>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section">
+      <button type="submit" mat-flat-button class="submit-btn primary-gradient" [disabled]="registrationForm.invalid">
+        <mat-icon>check_circle</mat-icon> Complete Registration
+      </button>
+    </div>
+  </form>
+</div>

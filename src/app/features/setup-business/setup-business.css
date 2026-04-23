@@ -1,0 +1,157 @@
+.setup-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  /* Ambient vibrant background */
+  background: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+  background-color: #0d0f1a;
+  background-size: cover;
+  animation: bgPulse 15s ease infinite alternate;
+  font-family: 'Inter', sans-serif;
+}
+
+@keyframes bgPulse {
+  0% { background-position: 0% 50%; background-color: #0b0c14; }
+  100% { background-position: 100% 50%; background-color: #121422; }
+}
+
+.setup-card {
+  width: 100%;
+  max-width: 650px;
+  padding: 32px 40px;
+  /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+  color: #fff !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.setup-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+mat-card-header {
+  margin-bottom: 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+::ng-deep .mat-mdc-card-header-text {
+  width: 100%;
+}
+
+mat-card-title {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 0%, #a2b1ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px !important;
+}
+
+mat-card-subtitle {
+  font-size: 16px !important;
+  color: #b0b8d1 !important;
+  line-height: 1.5;
+}
+
+mat-selection-list {
+  border: none;
+  background: transparent;
+  margin-bottom: 32px;
+}
+
+/* Custom list items */
+mat-list-option {
+  margin: 12px 0;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+
+mat-list-option:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: translateX(8px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+::ng-deep .mat-mdc-list-item-title {
+  color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  margin-bottom: 4px !important;
+}
+
+::ng-deep .mat-mdc-list-item-line {
+  color: #a0a8c0 !important;
+  font-size: 14px !important;
+}
+
+::ng-deep mat-list-option mat-icon {
+  color: #8c9eff !important;
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
+}
+
+mat-list-option:hover mat-icon {
+  transform: scale(1.4) rotate(5deg);
+  color: #b3c0ff !important;
+}
+
+mat-card-actions {
+  padding: 16px 0 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 10px;
+}
+
+button[mat-flat-button] {
+  padding: 0 32px;
+  height: 54px;
+  border-radius: 27px !important;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3) !important;
+  transition: all 0.3s ease !important;
+  text-transform: uppercase;
+}
+
+button[mat-flat-button]:hover:not([disabled]) {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px rgba(99, 102, 241, 0.5) !important;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+}
+
+button[mat-flat-button]:disabled {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}
+
+button[mat-flat-button] mat-icon {
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+button[mat-flat-button]:hover:not([disabled]) mat-icon {
+  transform: translateX(5px);
+}
+
