@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router'; // Import this
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet // Use RouterOutlet instead of Login
+    RouterOutlet
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
